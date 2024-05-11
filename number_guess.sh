@@ -5,9 +5,9 @@ PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 ## Generate a random number
 
 NUMBER=$((1 + RANDOM % 1000))
-
+echo $NUMBER
 ## Get the username
-echo -e "Enter your username:"
+echo  "Enter your username:"
 read USERNAME
 
 ##Check if the username is in the database
@@ -33,34 +33,39 @@ echo "Guess the secret number between 1 and 1000:"
 flag=false
 COUNT=1;
 
-while !flag
+while [ "$flag" = false ]
 do
 read PLAYER_NUMBER
 
 ## Check if it is an integer
-
+## Comprobamos si es un número entero
+  if ! [[ "$PLAYER_NUMBER" =~ ^[0-9]+$ ]]
+  then
+    echo "Por favor, ingresa un número entero."
+    continue
+  fi
 ## Choose a case
-if [[ $PLAYER_NUMBER < $NUMBER ]]
+if [ "$PLAYER_NUMBER" -lt "$NUMBER" ]
 then
   echo "It's higher than that, guess again:"
-  $COUNT++;
-else if [[ $PLAYER_NUMBER > $NUMBER ]]
+  COUNT=$((COUNT + 1))
+elif [ "$PLAYER_NUMBER" -gt "$NUMBER" ]
 then
   echo "It's lower than that, guess again:"
-  $COUNT++;
-else if [[ $PLAYER_NUMBER == $NUMBER ]]
+  COUNT=$((COUNT + 1))
+elif [ "$PLAYER_NUMBER" -eq "$NUMBER" ]
+then
  echo  "You guessed it in $COUNT tries. The secret number was $NUMNER. Nice job!"
  flag=true
- fi
-
-
+fi
 done
 
+BEST_GAME=1000;
 ## Check if it was the best game
-if [[$COUNT < $BEST_GAME]]
+if [ "$COUNT" -lt "$BEST_GAME" ]
 then
-  BEST_GAME=$COUNT
+  BEST_GAME="$COUNT"
 fi
-$GAMES_PLAYED++;
+GAMES_PLAYED=$((GAMES_PLAYED + 1))
 ## Save it in the database
-  SAVE_QUERY=$($PSQL "UPDATE games SET games_played=$GAMES_PLAYED,best_game=$BEST_GAME WHERE username='$USERNAME'") 
+SAVE_QUERY=$($PSQL "UPDATE games SET games_played=$GAMES_PLAYED, best_game=$BEST_GAME WHERE username='$USERNAME' ") 
