@@ -41,7 +41,7 @@ read PLAYER_NUMBER
 ## Comprobamos si es un número entero
   if ! [[ "$PLAYER_NUMBER" =~ ^[0-9]+$ ]]
   then
-    echo "Por favor, ingresa un número entero."
+    echo "That is not an integer, guess again:"
     continue
   fi
 ## Choose a case
@@ -55,7 +55,7 @@ then
   COUNT=$((COUNT + 1))
 elif [ "$PLAYER_NUMBER" -eq "$NUMBER" ]
 then
- echo  "You guessed it in $COUNT tries. The secret number was $NUMNER. Nice job!"
+ echo  "You guessed it in $COUNT tries. The secret number was $NUMBER. Nice job!"
  flag=true
 fi
 done
